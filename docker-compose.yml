@@ -1,0 +1,108 @@
+version: "3.7"
+
+services:
+  web:
+    build:
+      context: web
+      args:
+        HOSTNAME: ${HOSTNAME}
+    restart: unless-stopped
+    # Traefik labels are suggested as an example for people using Traefik,
+    # remove them if you are using another reverse proxy.
+    labels:
+      traefik.enable: 'true'
+      traefik.frontend.rule: "Host:${HOSTNAME}"
+      traefik.port: '80'
+    expose:
+      - '80'
+      - '443'
+    # If you don't want to use a reverse proxy (not suitable for production!)
+    #ports:
+    #  - '80:80'
+    #  - '443:443'
+    volumes:
+      - web:/var/www/html
+    environment:
+      HOSTNAME: ${HOSTNAME}
+      MAIL_DRIVER: ${MAIL_DRIVER}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION}
+    depends_on:
+      - api
+    networks:
+      - web
+      - default
+
+  api:
+    build: api
+    restart: unless-stopped
+    # Traefik labels are suggested as an example for people using Traefik,
+    # remove them if you are using another reverse proxy.
+    labels:
+      traefik.enable: 'true'
+      traefik.frontend.rule: "Host:api.${HOSTNAME}"
+      traefik.port: '3001'
+    expose:
+      - '3001'
+    # If you don't want to use a reverse proxy (not suitable for production!)
+    #ports:
+    #  - '3001:3001'
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: maria
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DB: ${MONGO_INITDB_DATABASE}
+      MONGO_HOST: mongo
+    volumes:
+      - api:/opt/socioboard-api
+    networks:
+      - web
+      - default
+    depends_on:
+      - maria
+      - mongo
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    env_file:
+      - .env.mongo
+    volumes:
+      - mongo-config:/data/configdb
+      - mongo-db:/data/db
+      - ./mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  maria:
+    image: mariadb
+    restart: unless-stopped
+    volumes:
+      - maria:/var/lib/mysql
+    environment:
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    env_file:
+      - .env.maria
+
+networks:
+  web:
+    external: true
+
+volumes:
+  api:
+  maria:
+  mongo-config:
+  mongo-db:
+  db:
+  redis:
+  web:
