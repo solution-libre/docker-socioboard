@@ -4,7 +4,7 @@ set -e
 
 # From https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c
 get_latest_release() {
-  curl -s "https://api.github.com/repos/socioboard/Socioboard-4.0/releases/latest" |
+  wget -O- -q "https://api.github.com/repos/socioboard/Socioboard-4.0/releases/latest" |
     grep '"tag_name":' |
     sed -E 's/.*"([^"]+)".*/\1/'
 }
@@ -14,7 +14,7 @@ api_path=/opt/socioboard-api
 
 if [ ! -d ${api_path}/user ]; then
   cd /tmp
-  curl -s -O https://github.com/socioboard/Socioboard-4.0/archive/$(get_latest_release).tar.gz
+  wget -q https://github.com/socioboard/Socioboard-4.0/archive/$(get_latest_release).tar.gz
   tar xzf $(get_latest_release).tar.gz Socioboard-4.0-$(get_latest_release)/socioboard-api/
   cd Socioboard-4.0-$(get_latest_release)
   mv socioboard-api/* ${api_path}/
