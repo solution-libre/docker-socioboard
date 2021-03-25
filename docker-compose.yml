@@ -43,13 +43,25 @@ services:
     # remove them if you are using another reverse proxy.
     labels:
       traefik.enable: 'true'
-      traefik.frontend.rule: "Host:api.${HOSTNAME}"
-      traefik.port: '3001'
+      traefik.00.frontend.rule: "Host:api-00.${HOSTNAME}"
+      traefik.00.port: '3000'
+      traefik.01.frontend.rule: "Host:api-01.${HOSTNAME}"
+      traefik.01.port: '3001'
+      traefik.02.frontend.rule: "Host:api-02.${HOSTNAME}"
+      traefik.02.port: '3002'
+      traefik.03.frontend.rule: "Host:api-03.${HOSTNAME}"
+      traefik.03.port: '3003'
     expose:
+      - '3000'
       - '3001'
+      - '3002'
+      - '3003'
     # If you don't want to use a reverse proxy (not suitable for production!)
     #ports:
+    #  - '3000:3000'
     #  - '3001:3001'
+    #  - '3002:3002'
+    #  - '3003:3003'
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
