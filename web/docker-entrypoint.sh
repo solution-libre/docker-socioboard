@@ -26,10 +26,10 @@ if [ ! -f .env ]; then
   cp environmentfile.env .env
   sed -i -e 's/\(APP_KEY\)=.*/\1=JQHhy0QgKxmgKce7NASf3Zg4ezxLidJS/' .env
   sed -i -e "s/\(APP_URL\)=.*/\1=https:\/\/${HOSTNAME}\//" .env
-  sed -i -e 's/\(API_URL\)=.*/\1=http:\/\/api:3000\//' .env
-  sed -i -e 's/\(API_URL_PUBLISH\)=.*/\1=http:\/\/api:3001\//' .env
-  sed -i -e 's/\(API_URL_FEEDs\)=.*/\1=http:\/\/api:3002\//' .env
-  sed -i -e 's/\(API_URL_NOTIFY\)=.*/\1=http:\/\/api:3003\//' .env
+  sed -i -e "s/\(API_URL\)=.*/\1=https:\/\/api-00.${HOSTNAME}\//" .env
+  sed -i -e "s/\(API_URL_PUBLISH\)=.*/\1=https:\/\/api-01.${HOSTNAME}\//" .env
+  sed -i -e "s/\(API_URL_FEEDs\)=.*/\1=https:\/\/api-02.${HOSTNAME}\//" .env
+  sed -i -e "s/\(API_URL_NOTIFY\)=.*/\1=https:\/\/api-03.${HOSTNAME}\//" .env
   sed -i -e "s/\(MAIL_DRIVER\)=.*/\1=${MAIL_DRIVER}/" .env
   sed -i -e "s/\(MAIL_HOST\)=.*/\1=${MAIL_HOST}/" .env
   sed -i -e "s/\(MAIL_PORT\)=.*/\1=$MAIL_PORT/" .env
