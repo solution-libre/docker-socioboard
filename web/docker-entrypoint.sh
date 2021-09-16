@@ -28,12 +28,12 @@ if [ ! -f .env ]; then
   sed -i -e 's/\(API_URL_UPDATE\)=.*/\1=http:\/\/api:3003\//' .env
   sed -i -e 's/\(API_URL_NOTIFY\)=.*/\1=http:\/\/api:3004\//' .env
   echo 'API_URL_NOTIFICATION=http://api:3004/' >> .env
-  #sed -i -e "s/\(MAIL_DRIVER\)=.*/\1=${MAIL_DRIVER}/" .env
-  #sed -i -e "s/\(MAIL_HOST\)=.*/\1=${MAIL_HOST}/" .env
-  #sed -i -e "s/\(MAIL_PORT\)=.*/\1=$MAIL_PORT/" .env
-  #sed -i -e "s/\(MAIL_USERNAME\)=.*/\1=${MAIL_USERNAME}/" .env
-  #sed -i -e "s/\(MAIL_PASSWORD\)=.*/\1=${MAIL_PASSWORD}/" .env
-  #sed -i -e "s/\(MAIL_ENCRYPTION\)=.*/\1=${MAIL_ENCRYPTION}/" .env
+  sed -i -e "s/\(MAIL_DRIVER\)=.*/\1=${MAIL_DRIVER}/" .env
+  sed -i -e "s/\(MAIL_HOST\)=.*/\1=${MAIL_HOST}/" .env
+  sed -i -e "s/\(MAIL_PORT\)=.*/\1=$MAIL_PORT/" .env
+  sed -i -e "s/\(MAIL_USERNAME\)=.*/\1=${MAIL_USERNAME}/" .env
+  sed -i -e "s/\(MAIL_PASSWORD\)=.*/\1=${MAIL_PASSWORD}/" .env
+  sed -i -e "s/\(MAIL_ENCRYPTION\)=.*/\1=${MAIL_ENCRYPTION}/" .env
 fi
 
 if [ ! -d vendor ]; then

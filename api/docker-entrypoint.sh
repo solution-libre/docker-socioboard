@@ -40,7 +40,9 @@ for folder in $folders; do
       if [ ! -f swagger-api-view.json ]; then
         cp ${api_path}/Notification/resources/views/swagger-api-view.json .
       fi
+      cd ..
     fi
+    cd ..
   fi
 
   if [ -d config ]; then
@@ -53,10 +55,15 @@ for folder in $folders; do
     fi
     if [ "${folder}" = 'User' ]; then
       # https://github.com/socioboard/Socioboard-5.0/issues/262
-      grep -r '/unauthorized' ../core ../resources | grep import | cut -d ':' -f 1 | xargs sed -i 's:/unauthorized:/unAuthorized:g'
+      set +e
+      src_files="$(grep -r '/unauthorized' ../core ../resources | grep import)"
+      set -e
+      if [ -n "${src_file}" ]; then
+         echo ${src_files} | cut -d ':' -f 1 | xargs sed -i 's:/unauthorized:/unAuthorized:g'
+      fi
 
       if [ "$(jq -r .twilio.account_sid development.json)" = '<< twilio account_sid >>' ]; then
-        jq '.twilio.account_sid=AC' development.json > development.json.tmp && mv development.json.tmp development.json
+        jq '.twilio.account_sid="AC"' development.json > development.json.tmp && mv development.json.tmp development.json
       fi
 
       #if [ $(jq .payment.base_path development.json) = null ]; then
@@ -77,9 +84,9 @@ if [ "$(jq -r .development.password config.json)" = '<< password >>' ]; then
   cd ..
   npx sequelize-cli db:migrate
   cd seeders/
-  seed=$(ls *-initialize_application_info.js)
-  cd - > /dev/null
-  sequelize-cli db:seed --seed "${seed}" &
+  seed=$(ls *-initialize_application_informations.cjs)
+  cd ..
+  npx sequelize-cli db:seed --seed "${seed}" &
 fi
 
 cd $PWD
