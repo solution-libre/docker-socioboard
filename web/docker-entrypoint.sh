@@ -2,44 +2,44 @@
 
 set -e
 
-# From https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c
-get_latest_release() {
-  curl -s "https://api.github.com/repos/socioboard/Socioboard-4.0/releases/latest" |
-    grep '"tag_name":' |
-    sed -E 's/.*"([^"]+)".*/\1/'
-}
-
 PWD=$(pwd)
+SOCIOBOARD_VERSION='5.1.0'
 web_path=/var/www/html
 
 if [ ! -d ${web_path}/app ]; then
+  archive_filename="socioboard-${SOCIOBOARD_VERSION}.tar.gz"
   cd /tmp
-  curl -s -L -O https://github.com/socioboard/Socioboard-4.0/archive/$(get_latest_release).tar.gz
-  tar xzf $(get_latest_release).tar.gz Socioboard-4.0-$(get_latest_release)/socioboard-web-php/
-  cd Socioboard-4.0-$(get_latest_release)
+  curl -s https://codeload.github.com/socioboard/Socioboard-5.0/tar.gz/Socioboard-${SOCIOBOARD_VERSION} -o ${archive_filename}
+  tar xzf ${archive_filename} Socioboard-5.0-Socioboard-${SOCIOBOARD_VERSION}/socioboard-web-php/
+  cd Socioboard-5.0-Socioboard-${SOCIOBOARD_VERSION}
   mv socioboard-web-php/* ${web_path}/
   cd - > /dev/null
-  rm -rf $(get_latest_release).tar.gz Socioboard-4.0-$(get_latest_release)
+  rm -rf ${archive_filename} Socioboard-5.0-Socioboard-${SOCIOBOARD_VERSION}
 fi
 
+cd ${web_path}
 if [ ! -f .env ]; then
-  cp environmentfile.env .env
+  cp example.env .env
   sed -i -e 's/\(APP_KEY\)=.*/\1=JQHhy0QgKxmgKce7NASf3Zg4ezxLidJS/' .env
   sed -i -e "s/\(APP_URL\)=.*/\1=https:\/\/${HOSTNAME}\//" .env
   sed -i -e 's/\(API_URL\)=.*/\1=http:\/\/api:3000\//' .env
-  sed -i -e 's/\(API_URL_PUBLISH\)=.*/\1=http:\/\/api:3001\//' .env
-  sed -i -e 's/\(API_URL_FEEDs\)=.*/\1=http:\/\/api:3002\//' .env
-  sed -i -e 's/\(API_URL_NOTIFY\)=.*/\1=http:\/\/api:3003\//' .env
-  sed -i -e "s/\(MAIL_DRIVER\)=.*/\1=${MAIL_DRIVER}/" .env
-  sed -i -e "s/\(MAIL_HOST\)=.*/\1=${MAIL_HOST}/" .env
-  sed -i -e "s/\(MAIL_PORT\)=.*/\1=$MAIL_PORT/" .env
-  sed -i -e "s/\(MAIL_USERNAME\)=.*/\1=${MAIL_USERNAME}/" .env
-  sed -i -e "s/\(MAIL_PASSWORD\)=.*/\1=${MAIL_PASSWORD}/" .env
-  sed -i -e "s/\(MAIL_ENCRYPTION\)=.*/\1=${MAIL_ENCRYPTION}/" .env
+  sed -i -e 's/\(API_URL_FEEDS\)=.*/\1=http:\/\/api:3001\//' .env
+  sed -i -e 's/\(API_URL_PUBLISH\)=.*/\1=http:\/\/api:3002\//' .env
+  sed -i -e 's/\(API_URL_UPDATE\)=.*/\1=http:\/\/api:3003\//' .env
+  sed -i -e 's/\(API_URL_NOTIFY\)=.*/\1=http:\/\/api:3004\//' .env
+  echo 'API_URL_NOTIFICATION=http://api:3004/' >> .env
+  #sed -i -e "s/\(MAIL_DRIVER\)=.*/\1=${MAIL_DRIVER}/" .env
+  #sed -i -e "s/\(MAIL_HOST\)=.*/\1=${MAIL_HOST}/" .env
+  #sed -i -e "s/\(MAIL_PORT\)=.*/\1=$MAIL_PORT/" .env
+  #sed -i -e "s/\(MAIL_USERNAME\)=.*/\1=${MAIL_USERNAME}/" .env
+  #sed -i -e "s/\(MAIL_PASSWORD\)=.*/\1=${MAIL_PASSWORD}/" .env
+  #sed -i -e "s/\(MAIL_ENCRYPTION\)=.*/\1=${MAIL_ENCRYPTION}/" .env
 fi
 
 if [ ! -d vendor ]; then
-  composer update
+  sed -i -e 's/    "type": "Project",/    "type": "project",/g' composer.json
+  composer install
+  php artisan key:generate
 fi
 
 chown -R www-data: .

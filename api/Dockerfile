@@ -8,6 +8,7 @@ RUN apk add --update-cache jq \
 RUN npm i -g \
              nodemon \
              mysql2 \
+             pm2 \
              sequelize-cli sequelize \
   && npm cache clean --force
 
@@ -20,5 +21,6 @@ EXPOSE 3000
 EXPOSE 3001
 EXPOSE 3002
 EXPOSE 3003
+EXPOSE 3004
 
 # vim:set ft=dockerfile:

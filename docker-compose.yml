@@ -51,17 +51,21 @@ services:
       traefik.02.port: '3002'
       traefik.03.frontend.rule: "Host:api-03.${HOSTNAME}"
       traefik.03.port: '3003'
+      traefik.04.frontend.rule: "Host:api-04.${HOSTNAME}"
+      traefik.04.port: '3004'
     expose:
       - '3000'
       - '3001'
       - '3002'
       - '3003'
+      - '3004'
     # If you don't want to use a reverse proxy (not suitable for production!)
     #ports:
     #  - '3000:3000'
     #  - '3001:3001'
     #  - '3002:3002'
     #  - '3003:3003'
+    #  - '3004:3004'
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}

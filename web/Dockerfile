@@ -1,4 +1,4 @@
-FROM php:7-apache
+FROM php:8-apache
 
 ARG HOSTNAME=domain.tld
 
