@@ -47,11 +47,46 @@ for folder in $folders; do
 
   if [ -d config ]; then
     cd config
-    if [ "$(jq -r .mongo.username development.json)" = '<< username >>' ]; then
+    if [ "$(jq -r .mongo development.json)" != null ]; then
       jq ".mongo.username=\"${MONGO_USERNAME}\"
         | .mongo.password=\"${MONGO_PASSWORD}\"
         | .mongo.db_name=\"${MONGO_DB}\"
         | .mongo.host=\"${MONGO_HOST}\"" development.json > development.json.tmp && mv development.json.tmp development.json
+    fi
+    if [ "$(jq -r .facebook_api development.json)" != null ]; then
+      jq ".facebook_api.app_id=\"${FACEBOOK_APP_ID}\"
+        | .facebook_api.secret_key=\"${FACEBOOK_SECRET_KEY}\"
+        | .facebook_api.redirect_url=\"https://${HOSTNAME}/facebook-callback\"
+        | .facebook_api.fbprofile_add_redirect_url=\"https://${HOSTNAME}/facebook/callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
+        #| .facebook_api.page_scopes=\"publish_pages,manage_pages,read_insights\"
+    fi
+    if [ "$(jq -r .profile_add_redirect_url development.json)" != null ]; then
+      jq ".profile_add_redirect_url=\"https://${HOSTNAME}/facebook/callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
+    fi
+    if [ "$(jq -r .profile_page_redirect_url development.json)" != null ]; then
+      jq ".profile_page_redirect_url=\"https://${HOSTNAME}/facebook-page/callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
+    fi
+    if [ "$(jq -r .google_api development.json)" != null ]; then
+      jq ".google_api.client_id=\"${GOOGLE_CLIENT_ID}\"
+        | .google_api.client_secrets=\"${GOOGLE_CLIENT_SECRETS}\"
+        | .google_api.api_key=\"${GOOGLE_API_KEY}\"
+        | .google_api.youtube_webhook_url=\"https://api-02.${HOSTNAME}/v1/webhooks/youtube\"
+        | .google_api.redirect_url=\"https://${HOSTNAME}/google-callback\"
+	| .google_api.youtube_redirect_url=\"https://${HOSTNAME}/youtube/callback\"
+        | .google_api.google_profile_add_redirect_url=\"https://${HOSTNAME}/youtube/callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
+    fi
+    if [ "$(jq -r .instagram_business_api development.json)" != null ]; then
+      jq ".instagram_business_api.client_id=\"${FACEBOOK_APP_ID}\"
+        | .instagram_business_api.client_secret=\"${FACEBOOK_SECRET_KEY}\"
+        | .instagram_business_api.business_redirect_url=\"https://${HOSTNAME}/instagram-business/callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
+    fi
+    if [ "$(jq -r .twitter_api development.json)" != null ]; then
+      jq ".twitter_api.api_key=\"${TWITTER_API_KEY}\"
+        | .twitter_api.secret_key=\"${TWITTER_SECRET_KEY}\"
+        | .twitter_api.app_name=\"${TWITTER_APP_NAME}\"
+        | .twitter_api.webhook_url=\"https://api-02.${HOSTNAME}/v1/webhooks/twitter\"
+        | .twitter_api.redirect_url=\"https://${HOSTNAME}/twitter/callback\"
+        | .twitter_api.login_redirect_url=\"https://${HOSTNAME}/twitter-callback\"" development.json > development.json.tmp && mv development.json.tmp development.json
     fi
     if [ "${folder}" = 'User' ]; then
       # https://github.com/socioboard/Socioboard-5.0/issues/262
