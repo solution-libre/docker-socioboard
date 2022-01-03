@@ -22,6 +22,7 @@ cd socioboard
 ```
 
 Declare environment variables or copy the `.env.dist` to `.env`, the `.env.maria.dist` to `.env.maria` and the `.env.mongo.dist` to `.env.mongo` and adjust its values.
+Example: export C=$(cat .env.dist) 
 
 Register a domain like 'socioboard.domain.tld' and theese subdomains 'api-00.socioboard.domain.tld', 'api-01.socioboard.domain.tld', 'api-02.socioboard.domain.tld', 'api-03.socioboard.domain.tld'.
 
