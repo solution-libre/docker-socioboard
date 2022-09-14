@@ -50,3 +50,8 @@ The SocioBoard hostname. Default value: 'socioboard.domain.tld'
 ## Contributors
 
 The list of contributors can be found at: https://github.com/solution-libre/docker-socioboard/graphs/contributors
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
